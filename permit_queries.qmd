@@ -40,10 +40,12 @@ dbExecute(connection, "set search_path to survey_data")
 
 ```
 
-## Query Data
+## Permit Counts
+
+### Query Data
 ```{r}
 
-q <- "select r.region, s.site, v.date, s2.detection_type, c.species_capture, c.crispr_id
+q <- "select r.region, s.site, v.date, s2.detection_type, c.species_capture
       from region r
       join site s on r.region_id = s.region_id
       join visit v on s.site_id = v.site_id
@@ -58,12 +60,35 @@ raw_data <- dbGetQuery(connection, q)
 
 ```
 
-## Summarize 
+### Summarize 
 ```{r}
 
 raw_data %>% 
   group_by(species_capture) %>% 
   reframe(n = n())
 
+```
+## `crispr_id` Info
+
+### Query
+```{r}
+
+c_q <- "select r.region, s.site, v.date, s2.detection_type, c.species_capture, c.bd_swab_id, c.crispr_id
+      from region r
+      join site s on r.region_id = s.region_id
+      join visit v on s.site_id = v.site_id
+      join survey s2 on v.visit_id = s2.visit_id
+      join capture c on s2.survey_id = c.survey_id
+      where r.region = 'pennsylvania'
+      and c.crispr_id is not null;"
+
+crispr_meta <- dbGetQuery(connection, c_q)
+
+```
+
+```{r}
+
+crispr_meta
+  
 ```
 
