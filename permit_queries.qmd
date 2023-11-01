@@ -65,7 +65,8 @@ raw_data <- dbGetQuery(connection, q)
 
 raw_data %>% 
   group_by(species_capture) %>% 
-  reframe(n = n())
+  reframe(n = n()) %>% 
+  write_csv(here("permit_species_counts.csv"))
 
 ```
 ## `crispr_id` Info
@@ -88,7 +89,8 @@ crispr_meta <- dbGetQuery(connection, c_q)
 
 ```{r}
 
-crispr_meta
+crispr_meta %>% 
+  write_csv(here("crispr_meta_data.csv"))
   
 ```
 
